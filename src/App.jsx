@@ -120,11 +120,10 @@ export default function App() {
 
     setStatus('sending')
     try {
-      const res = await fetch(SHEET_WEBHOOK, {
+      await fetch(SHEET_WEBHOOK, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, timestamp: new Date().toISOString() }),
         mode: 'no-cors',
+        body: new URLSearchParams({ email, timestamp: new Date().toISOString() }),
       })
       setStatus('success')
     } catch {
