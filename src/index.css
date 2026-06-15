@@ -1,0 +1,246 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --paper: #f0ebe0;
+  --ink: #0a0a0a;
+  --red: #d32027;
+  --yellow: #f5c518;
+  --blue: #1c4fb5;
+  --red-light: #e8575c;
+  --red-dark: #9a161b;
+  --gray-100: #e8e3d8;
+  --gray-200: #d4cfc4;
+  --gray-300: #b0ab9f;
+  --gray-400: #7a756b;
+  --gray-500: #4a4640;
+  --font-display: "Josefin Sans", "Century Gothic", "Futura", sans-serif;
+  --font-body: "Helvetica Neue", "Arial", sans-serif;
+  --font-sketch: "Caveat", cursive;
+  --font-mono: "Courier New", "Courier", monospace;
+  --border-thin: 2px solid var(--ink);
+  --border-thick: 4px solid var(--ink);
+  --border-heavy: 6px solid var(--ink);
+  --transition-fast: 100ms ease-out;
+  --transition-normal: 150ms ease-out;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border-radius: 0 !important;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--paper);
+  color: var(--ink);
+  overflow-x: hidden;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* Paper texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.25;
+}
+
+/* ── BAUHAUS TYPOGRAPHY ── */
+h1, h2, h3 {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: -1px;
+  line-height: 0.92;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+/* Sketch accent text — exception to uppercase rule */
+.sketch-text {
+  font-family: var(--font-sketch);
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: 1.1;
+}
+
+/* ── BAUHAUS DIVIDERS ── */
+.bauhaus-rule {
+  height: 4px;
+  background: var(--ink);
+  border: none;
+}
+
+.bauhaus-rule-red {
+  height: 4px;
+  background: var(--red);
+  border: none;
+}
+
+.bauhaus-rule-thin {
+  height: 2px;
+  background: var(--ink);
+  border: none;
+}
+
+/* ── GEOMETRIC DIVIDER ── */
+.geo-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px 0;
+}
+.geo-divider::before,
+.geo-divider::after {
+  content: '';
+  flex: 1;
+  height: 2px;
+  background: var(--ink);
+  opacity: 0.15;
+}
+
+/* ── BUTTONS ── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 40px;
+  background: var(--red);
+  color: var(--paper);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+.btn-primary:hover {
+  opacity: 0.85;
+}
+.btn-primary:active {
+  transform: scale(0.97);
+}
+
+.btn-dark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 40px;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+.btn-dark:hover {
+  opacity: 0.85;
+}
+.btn-dark:active {
+  transform: scale(0.97);
+}
+
+/* ── INPUTS (Bauhaus minimal) ── */
+input[type="email"] {
+  font-family: var(--font-display);
+  font-size: 16px;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid var(--ink);
+  padding: 10px 0;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink);
+  outline: none;
+  transition: border-color var(--transition-normal);
+  width: 100%;
+}
+input[type="email"]::placeholder {
+  color: var(--gray-300);
+  text-transform: none;
+  letter-spacing: 0;
+  font-family: var(--font-body);
+}
+input[type="email"]:focus {
+  border-bottom-color: var(--red);
+}
+
+/* ── CARDS (Bauhaus thick border) ── */
+.card {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  padding: 32px;
+}
+
+.card-featured {
+  background: var(--paper);
+  border: 4px solid var(--ink);
+  border-left: 12px solid var(--red);
+  padding: 32px;
+}
+
+.card-dark {
+  background: var(--ink);
+  color: var(--paper);
+  border: 3px solid var(--ink);
+  padding: 32px;
+}
+
+/* ── BADGES ── */
+.badge {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  padding: 6px 16px;
+  border: 3px solid var(--ink);
+}
+.badge-red {
+  background: var(--red);
+  color: var(--paper);
+  border-color: var(--red);
+}
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gray-400);
+}
+
+/* ── CHECK ITEMS ── */
+.check-item::before {
+  content: '■';
+  color: var(--red);
+  font-size: 10px;
+  margin-right: 12px;
+  vertical-align: middle;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--paper); }
+::-webkit-scrollbar-thumb { background: var(--gray-200); }
