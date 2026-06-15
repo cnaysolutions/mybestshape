@@ -105,15 +105,30 @@ function Section({ children, className = '' }) {
   return <section className={className}>{children}</section>
 }
 
+const SHEET_WEBHOOK = 'https://script.google.com/macros/s/AKfycbyqoBSMQ7VmEoLj1ELolRL72_wvjzriZUnU8NPW_3mT8t3ktye4DmgpVVIcDzGD0QXQ/exec'
+
 /* ── Main App ── */
 export default function App() {
   const [email, setEmail] = useState('')
-  const [submitted, setSubmitted] = useState(false)
+  const [honey, setHoney] = useState('')
+  const [status, setStatus] = useState('idle') // idle | sending | success | error
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
-    if (email.includes('@')) {
-      setSubmitted(true)
+    if (honey) return
+    if (!email || !email.includes('@') || !email.includes('.')) return
+
+    setStatus('sending')
+    try {
+      const res = await fetch(SHEET_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, timestamp: new Date().toISOString() }),
+        mode: 'no-cors',
+      })
+      setStatus('success')
+    } catch {
+      setStatus('error')
     }
   }
 
@@ -152,9 +167,26 @@ export default function App() {
                 Track your calories, habits, and progress every day.
               </p>
 
-              {!submitted ? (
+              {status === 'success' ? (
+                <div className="max-w-sm mx-auto card-featured p-[32px]">
+                  <p className="font-sketch text-2xl text-red mb-[8px]">Welcome!</p>
+                  <p className="font-body text-gray-400">
+                    Check your inbox at <strong className="text-ink">{email}</strong> — your free trial starts now.
+                  </p>
+                </div>
+              ) : (
                 <form onSubmit={handleSubmit} className="max-w-sm mx-auto">
                   <p className="font-sketch text-gray-400 text-xl mb-[16px]">Start Your Free 3-Day Trial</p>
+                  {/* Honeypot — hidden from humans, visible to bots */}
+                  <input
+                    type="text"
+                    name="website"
+                    value={honey}
+                    onChange={e => setHoney(e.target.value)}
+                    style={{ position: 'absolute', left: '-9999px', tabIndex: -1 }}
+                    autoComplete="off"
+                    aria-hidden="true"
+                  />
                   <input
                     type="email"
                     placeholder="Enter your email address"
@@ -163,18 +195,19 @@ export default function App() {
                     required
                     className="mb-[20px] text-center"
                   />
-                  <button type="submit" className="btn-primary w-full">
-                    START FREE
+                  <button
+                    type="submit"
+                    className="btn-primary w-full"
+                    disabled={status === 'sending'}
+                    style={{ opacity: status === 'sending' ? 0.6 : 1 }}
+                  >
+                    {status === 'sending' ? 'SENDING...' : 'START FREE'}
                   </button>
+                  {status === 'error' && (
+                    <p className="text-red text-sm mt-[12px] font-body">Something went wrong — please try again.</p>
+                  )}
                   <p className="text-gray-300 text-sm mt-[12px] font-body">No credit card required.</p>
                 </form>
-              ) : (
-                <div className="max-w-sm mx-auto card-featured p-[32px]">
-                  <p className="font-sketch text-2xl text-red mb-[8px]">Welcome!</p>
-                  <p className="font-body text-gray-400">
-                    Check your email at <strong className="text-ink">{email}</strong> to start your free trial.
-                  </p>
-                </div>
               )}
             </div>
 
