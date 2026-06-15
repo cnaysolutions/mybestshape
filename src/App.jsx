@@ -105,7 +105,7 @@ function Section({ children, className = '' }) {
   return <section className={className}>{children}</section>
 }
 
-const SHEET_WEBHOOK = 'https://script.google.com/macros/s/AKfycbyqoBSMQ7VmEoLj1ELolRL72_wvjzriZUnU8NPW_3mT8t3ktye4DmgpVVIcDzGD0QXQ/exec'
+const SHEET_WEBHOOK = 'https://script.google.com/macros/s/AKfycbxDU04c5C9jj-5uM2EZROy5PWi9L1f1uqhWcYQM4DedALb4x1O2c-OssVt6nUAskPvb/exec'
 
 /* ── Main App ── */
 export default function App() {
