@@ -159,7 +159,10 @@ h1, h2, h3 {
 }
 
 /* ── INPUTS (Bauhaus minimal) ── */
-input[type="email"] {
+input[type="email"],
+input[type="text"],
+input[type="number"],
+textarea {
   font-family: var(--font-display);
   font-size: 16px;
   background: transparent;
@@ -173,13 +176,26 @@ input[type="email"] {
   transition: border-color var(--transition-normal);
   width: 100%;
 }
-input[type="email"]::placeholder {
+textarea {
+  text-transform: none;
+  letter-spacing: 0;
+  font-family: var(--font-body);
+  resize: vertical;
+  min-height: 80px;
+}
+input[type="email"]::placeholder,
+input[type="text"]::placeholder,
+input[type="number"]::placeholder,
+textarea::placeholder {
   color: var(--gray-300);
   text-transform: none;
   letter-spacing: 0;
   font-family: var(--font-body);
 }
-input[type="email"]:focus {
+input[type="email"]:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
+textarea:focus {
   border-bottom-color: var(--red);
 }
 

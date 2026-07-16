@@ -1,4 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
+import { supabase } from './supabaseClient'
+import Login from './Login'
+import Dashboard from './Dashboard'
 
 /* ── SVG Illustrations (Bauhaus sketch style) ── */
 
@@ -105,31 +108,20 @@ function Section({ children, className = '' }) {
   return <section className={className}>{children}</section>
 }
 
-const SHEET_WEBHOOK = 'https://script.google.com/macros/s/AKfycbz0QPRvnxxU1TBxJFHHTzZ5GPCYGqc5jVZ3Gfqh317RyisOcOj8NdY22EIMbWnmFdh5/exec'
-
 /* ── Main App ── */
 export default function App() {
-  const [email, setEmail] = useState('')
-  const [honey, setHoney] = useState('')
-  const [status, setStatus] = useState('idle') // idle | sending | success | error
+  const [session, setSession] = useState(undefined) // undefined = loading, null = logged out
 
-  async function handleSubmit(e) {
-    e.preventDefault()
-    if (honey) return
-    if (!email || !email.includes('@') || !email.includes('.')) return
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setSession(data.session))
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession)
+    })
+    return () => listener.subscription.unsubscribe()
+  }, [])
 
-    setStatus('sending')
-    try {
-      await fetch(SHEET_WEBHOOK, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: new URLSearchParams({ email, timestamp: new Date().toISOString() }),
-      })
-      setStatus('success')
-    } catch {
-      setStatus('error')
-    }
-  }
+  if (session === undefined) return null
+  if (session) return <Dashboard user={session.user} onLogout={() => setSession(null)} />
 
   return (
     <div className="min-h-screen bg-paper">
@@ -166,48 +158,7 @@ export default function App() {
                 Track your calories, habits, and progress every day.
               </p>
 
-              {status === 'success' ? (
-                <div className="max-w-sm mx-auto card-featured p-[32px]">
-                  <p className="font-sketch text-2xl text-red mb-[8px]">Welcome!</p>
-                  <p className="font-body text-gray-400">
-                    Check your inbox at <strong className="text-ink">{email}</strong> — your free trial starts now.
-                  </p>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="max-w-sm mx-auto">
-                  <p className="font-sketch text-gray-400 text-xl mb-[16px]">Start Your Free 3-Day Trial</p>
-                  {/* Honeypot — hidden from humans, visible to bots */}
-                  <input
-                    type="text"
-                    name="website"
-                    value={honey}
-                    onChange={e => setHoney(e.target.value)}
-                    style={{ position: 'absolute', left: '-9999px', tabIndex: -1 }}
-                    autoComplete="off"
-                    aria-hidden="true"
-                  />
-                  <input
-                    type="email"
-                    placeholder="Enter your email address"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    required
-                    className="mb-[20px] text-center"
-                  />
-                  <button
-                    type="submit"
-                    className="btn-primary w-full"
-                    disabled={status === 'sending'}
-                    style={{ opacity: status === 'sending' ? 0.6 : 1 }}
-                  >
-                    {status === 'sending' ? 'SENDING...' : 'START FREE'}
-                  </button>
-                  {status === 'error' && (
-                    <p className="text-red text-sm mt-[12px] font-body">Something went wrong — please try again.</p>
-                  )}
-                  <p className="text-gray-300 text-sm mt-[12px] font-body">No credit card required.</p>
-                </form>
-              )}
+              <Login />
             </div>
 
             <div className="w-1/3 md:w-1/4 flex justify-start">
